@@ -1,0 +1,118 @@
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{{ isEdit() ? 'Edit Student' : 'Add Student' }}</h1>
+      <p class="page-subtitle">{{ isEdit() ? 'Update student information' : 'Create a new student profile' }}</p>
+    </div>
+    <button class="btn btn-ghost" (click)="onCancel()">← Back</button>
+  </div>
+
+  <app-spinner *ngIf="loading()" [size]="40" message="Loading..."></app-spinner>
+
+  <form *ngIf="!loading()" [formGroup]="form" (ngSubmit)="onSubmit()" class="form-layout" novalidate>
+    <!-- Personal Info -->
+    <div class="card form-card">
+      <div class="form-card-header">
+        <h2 class="form-section-title">Personal Information</h2>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input
+            type="text"
+            class="form-control"
+            [class.form-control--error]="hasError('firstName')"
+            formControlName="firstName"
+            placeholder="Alice">
+          <span class="form-error" *ngIf="hasError('firstName')">{{ getError('firstName') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input
+            type="text"
+            class="form-control"
+            [class.form-control--error]="hasError('lastName')"
+            formControlName="lastName"
+            placeholder="Johnson">
+          <span class="form-error" *ngIf="hasError('lastName')">{{ getError('lastName') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input
+            type="email"
+            class="form-control"
+            [class.form-control--error]="hasError('email')"
+            formControlName="email"
+            placeholder="alice@edu.com">
+          <span class="form-error" *ngIf="hasError('email')">{{ getError('email') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone *</label>
+          <input
+            type="tel"
+            class="form-control"
+            [class.form-control--error]="hasError('phoneNumber')"
+            formControlName="phoneNumber"
+            placeholder="555-0100">
+          <span class="form-error" *ngIf="hasError('phoneNumber')">{{ getError('phoneNumber') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Address *</label>
+          <input
+            type="tel"
+            class="form-control"
+            [class.form-control--error]="hasError('address')"
+            formControlName="address"
+            placeholder="1234 Test Rd">
+          <span class="form-error" *ngIf="hasError('address')">{{ getError('address') }}</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Course Enrollment -->
+    <div class="card form-card">
+      <div class="form-card-header">
+        <h2 class="form-section-title">Course Enrollment</h2>
+        <span class="selected-count">
+          {{ form.get('courses')?.value?.length || 0 }} selected
+        </span>
+      </div>
+      <div class="course-picker">
+        <div
+          *ngFor="let course of courses()"
+          class="course-pick-item"
+          [class.course-pick-item--selected]="isCourseSelected(course)"
+          (click)="toggleCourse(course)">
+          <div class="pick-check" [class.pick-check--active]="isCourseSelected(course)"
+               [class.pick-check--disabled]="course.alreadyEnrolled">
+            <span *ngIf="isCourseSelected(course)">✓</span>
+            <span *ngIf="course.alreadyEnrolled" class="already-enrolled-label">Enrolled</span>
+
+          </div>
+          <div class="pick-info">
+            <div class="pick-code">{{ course.code }}</div>
+            <div class="pick-name">{{ course.name }}</div>
+            <div class="pick-meta">{{ course.instructor }} · {{ course.credits }} credits</div>
+          </div>
+        </div>
+
+        <div *ngIf="courses().length === 0" class="no-courses">No courses available</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+        <app-spinner *ngIf="submitting()" [size]="16"></app-spinner>
+        <span *ngIf="!submitting()">{{ isEdit() ? 'Save Changes' : 'Create Student' }}</span>
+        <span *ngIf="submitting()">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>

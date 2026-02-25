@@ -1,0 +1,118 @@
+<div class="detail-page">
+  <app-spinner *ngIf="loading()" [size]="40" message="Loading course..."></app-spinner>
+
+  <ng-container *ngIf="!loading() && course() as c">
+    <div class="detail-header">
+      <button class="btn btn-ghost" (click)="goBack()">← Courses</button>
+      <div class="detail-header-actions">
+        <button class="btn btn-secondary" (click)="navigateToEdit()">✏ Edit</button>
+        <button class="btn btn-danger-outline" (click)="showDeleteDialog.set(true)">🗑 Delete</button>
+      </div>
+    </div>
+
+    <!-- Course Profile -->
+    <div class="card course-hero">
+      <div class="hero-left">
+        <div class="hero-code">{{ c.code }}</div>
+        <h1 class="hero-name">{{ c.name }}</h1>
+        <p class="hero-desc">{{ c.description }}</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-val">{{ c.credits }}</div>
+          <div class="hero-stat-label">Credits</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">{{ c.enrolledCount }}</div>
+          <div class="hero-stat-label">Enrolled</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">{{ c.capacity }}</div>
+          <div class="hero-stat-label">Capacity</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="detail-grid">
+      <!-- Info Card -->
+      <div class="card">
+        <h2 class="card-title">Course Info</h2>
+        <div class="detail-list">
+          <div class="detail-row">
+            <span class="detail-key">Instructor</span>
+            <span class="detail-val">{{ c.instructor }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Schedule</span>
+            <span class="detail-val">{{ c.schedule }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Start Date</span>
+            <span class="detail-val">{{ c.startDate | date:'MMMM d, y' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">End Date</span>
+            <span class="detail-val">{{ c.endDate | date:'MMMM d, y' }}</span>
+          </div>
+        </div>
+
+        <div class="capacity-section">
+          <div class="capacity-header">
+            <span class="detail-key">Enrollment</span>
+            <span class="detail-val">{{ c.enrolledCount }}/{{ c.capacity }} ({{ getCapacityPercent() }}%)</span>
+          </div>
+          <div class="cap-bar-full">
+            <div
+              class="cap-bar-fill"
+              [style.width.%]="getCapacityPercent()"
+              [class.cap-full]="getCapacityPercent() >= 90">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enrolled Students -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Enrolled Students</h2>
+          <span class="count-badge">{{ enrolledStudents().length }}</span>
+        </div>
+
+        <div *ngIf="enrolledStudents().length > 0; else noStudents" class="student-list">
+          <div *ngFor="let student of enrolledStudents()" class="student-row"
+            [routerLink]="['/students', student.id]">
+            <div
+              class="s-avatar"
+              [appAvatar]="getStudentFullName(student)"
+              [avatarColor]="'#6366f1'"
+              [avatarSize]="36">
+            </div>
+            <div class="s-info">
+              <span class="s-name">{{ getStudentFullName(student) }}</span>
+              <span class="s-email">{{ student.email }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noStudents>
+          <app-empty-state
+            icon="🎓"
+            title="No enrolled students"
+            message="No students are enrolled in this course yet.">
+          </app-empty-state>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<app-confirm-dialog
+  [visible]="showDeleteDialog()"
+  title="Delete Course"
+  [message]="'Are you sure you want to delete '"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="showDeleteDialog.set(false)">
+</app-confirm-dialog>

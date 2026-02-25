@@ -1,0 +1,104 @@
+<div class="course-list-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Courses</h1>
+      <p class="page-subtitle">Manage available courses and their enrollments</p>
+    </div>
+    <button class="btn btn-primary" (click)="navigateToCreate()">
+      <span class="btn-icon">+</span> Add Course
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search courses..."
+        [formControl]="searchControl">
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="loading-wrapper">
+    <app-spinner [size]="40" message="Loading courses..."></app-spinner>
+  </div>
+
+  <!-- Course Grid -->
+  <ng-container *ngIf="!loading()">
+    <div *ngIf="courses().length > 0; else emptyRef" class="course-grid">
+      <div
+        *ngFor="let course of courses()"
+        class="course-card"
+        (click)="navigateToDetail(course.id)">
+
+
+        <h3 class="course-card-name">{{ course.name }}</h3>
+        <p class="course-card-desc">{{ course.description }}</p>
+
+        <div class="course-card-meta">
+          <div class="meta-item">
+            <span class="meta-icon">👤</span>
+            <span>{{ course.instructor }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">⭐</span>
+            <span>{{ course.credits }} credits</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🗓</span>
+            <span>{{ course.schedule }}</span>
+          </div>
+        </div>
+
+        <div class="course-capacity-section">
+          <div class="capacity-label">
+            <span>Enrollment</span>
+            <span class="capacity-fraction">{{ course.enrolledCount }}/{{ course.capacity }}</span>
+          </div>
+          <div class="capacity-bar-full">
+            <div
+              class="capacity-bar-fill"
+              [style.width.%]="getCapacityPercent(course)"
+              [class.capacity-full]="getCapacityPercent(course) >= 90">
+            </div>
+          </div>
+        </div>
+
+        <div class="course-card-footer">
+          <div class="card-actions" (click)="$event.stopPropagation()">
+            <button class="icon-btn" (click)="navigateToEdit(course.id, $event)">✏</button>
+            <button class="icon-btn icon-btn--danger" (click)="confirmDelete(course, $event)">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyRef>
+    <app-empty-state
+      *ngIf="!loading()"
+      icon="📚"
+      title="No courses found"
+      message="No courses match your filters. Try creating a new one!">
+      <button class="btn btn-primary" (click)="navigateToCreate()">+ Add Course</button>
+    </app-empty-state>
+  </ng-template>
+
+  <div *ngIf="!loading() && courses().length > 0" class="results-footer">
+    Showing {{ courses().length }} course{{ courses().length !== 1 ? 's' : '' }}
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="showDeleteDialog()"
+  title="Delete Course"
+  [message]="'Are you sure you want to delete This cannot be undone.'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="onDeleteCancelled()">
+</app-confirm-dialog>

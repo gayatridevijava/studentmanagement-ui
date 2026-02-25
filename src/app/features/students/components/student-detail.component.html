@@ -1,0 +1,95 @@
+<div class="detail-page">
+  <app-spinner *ngIf="loading()" [size]="40" message="Loading student..."></app-spinner>
+
+  <ng-container *ngIf="!loading() && student() as s">
+    <!-- Header -->
+    <div class="detail-header">
+      <button class="btn btn-ghost" (click)="goBack()">← Students</button>
+      <div class="detail-header-actions">
+        <button class="btn btn-secondary" (click)="navigateToEdit()">✏ Edit</button>
+        <button class="btn btn-danger-outline" (click)="showDeleteDialog.set(true)">🗑 Delete</button>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card profile-card">
+      <div
+        class="profile-avatar"
+        [appAvatar]="getFullName()"
+        [avatarColor]="'#6366f1'"
+        [avatarSize]="80">
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name">{{ getFullName() }}</h1>
+        <p class="profile-email">{{ s.email }}</p>
+        <div class="profile-badges">
+          <span class="course-count-badge">{{ s.enrolledCourses.length }} courses enrolled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="detail-grid">
+      <div class="card">
+        <h2 class="card-title">Contact & Personal</h2>
+        <div class="detail-list">
+          <div class="detail-row">
+            <span class="detail-key">Phone</span>
+            <span class="detail-val">{{ s.phoneNumber }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Email</span>
+            <span class="detail-val">{{ s.email }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enrolled Courses -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Enrolled Courses</h2>
+          <button class="btn btn-sm btn-primary" (click)="navigateToEdit()">
+            Manage
+          </button>
+        </div>
+
+        <div *ngIf="enrolledCourses().length > 0; else noCourses" class="course-list">
+          <div *ngFor="let course of enrolledCourses()" class="course-row">
+            <div class="course-code-chip">{{ course.code }}</div>
+            <div class="course-row-info">
+              <span class="course-row-name">{{ course.name }}</span>
+              <span class="course-row-meta">{{ course.instructor }} · {{ course.credits }} cr.</span>
+            </div>
+            <button
+              class="icon-btn icon-btn--danger"
+              title="Unenroll"
+              (click)="unenrollFromCourse(course.id)">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <ng-template #noCourses>
+          <app-empty-state
+            icon="📚"
+            title="No courses"
+            message="This student is not enrolled in any courses.">
+            <button class="btn btn-sm btn-primary" (click)="navigateToEdit()">
+              Enroll in Courses
+            </button>
+          </app-empty-state>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<app-confirm-dialog
+  [visible]="showDeleteDialog()"
+  title="Delete Student"
+  [message]="'Are you sure you want to delete ' + getFullName() + '? This cannot be undone.'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="showDeleteDialog.set(false)">
+</app-confirm-dialog>

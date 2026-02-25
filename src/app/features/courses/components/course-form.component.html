@@ -1,0 +1,75 @@
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{{ isEdit() ? 'Edit Course' : 'Add Course' }}</h1>
+      <p class="page-subtitle">{{ isEdit() ? 'Update course information' : 'Create a new course' }}</p>
+    </div>
+    <button class="btn btn-ghost" (click)="onCancel()">← Back</button>
+  </div>
+
+  <app-spinner *ngIf="loading()" [size]="40" message="Loading..."></app-spinner>
+
+  <form *ngIf="!loading()" [formGroup]="form" (ngSubmit)="onSubmit()" class="form-layout" novalidate>
+    <!-- Basic Info -->
+    <div class="card form-card">
+      <h2 class="form-section-title">Course Details</h2>
+      <div class="form-grid">
+
+        <div class="form-group form-group--wide">
+          <label class="form-label">Course Name *</label>
+          <input type="text" class="form-control" [class.form-control--error]="hasError('name')"
+            formControlName="name" placeholder="Introduction to Computer Science">
+          <span class="form-error" *ngIf="hasError('name')">{{ getError('name') }}</span>
+        </div>
+
+        <div class="form-group form-group--full">
+          <label class="form-label">Description *</label>
+          <textarea class="form-control form-textarea" [class.form-control--error]="hasError('description')"
+            formControlName="description" placeholder="Brief description of the course content and objectives..."
+            rows="3"></textarea>
+          <span class="form-error" *ngIf="hasError('description')">{{ getError('description') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Instructor *</label>
+          <input type="text" class="form-control" [class.form-control--error]="hasError('instructor')"
+            formControlName="instructor" placeholder="Dr. Alan Turing">
+          <span class="form-error" *ngIf="hasError('instructor')">{{ getError('instructor') }}</span>
+        </div>
+
+
+
+        <div class="form-group">
+          <label class="form-label">Credits *</label>
+          <input type="number" class="form-control" [class.form-control--error]="hasError('credits')"
+            formControlName="credits" min="1" max="12">
+          <span class="form-error" *ngIf="hasError('credits')">{{ getError('credits') }}</span>
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label">Start Date *</label>
+          <input type="date" class="form-control" [class.form-control--error]="hasError('startDate')"
+            formControlName="startDate">
+          <span class="form-error" *ngIf="hasError('startDate')">{{ getError('startDate') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">End Date *</label>
+          <input type="date" class="form-control" [class.form-control--error]="hasError('endDate')"
+            formControlName="endDate">
+          <span class="form-error" *ngIf="hasError('endDate')">{{ getError('endDate') }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+        <span *ngIf="!submitting()">{{ isEdit() ? 'Save Changes' : 'Create Course' }}</span>
+        <span *ngIf="submitting()">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>

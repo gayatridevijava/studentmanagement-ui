@@ -1,0 +1,94 @@
+.detail-page { padding: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.detail-header-actions { display: flex; gap: 0.75rem; }
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.75rem;
+}
+
+.profile-info { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.profile-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.profile-email { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
+
+.profile-badges { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.course-count-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(99,102,241,0.1);
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .profile-card { flex-direction: column; text-align: center; }
+}
+
+.detail-list { display: flex; flex-direction: column; gap: 0; }
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.detail-row:last-child { border-bottom: none; }
+
+.detail-key { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; flex-shrink: 0; }
+.detail-val { font-size: 0.875rem; color: var(--text-primary); font-weight: 500; text-align: right; }
+
+.course-list { display: flex; flex-direction: column; gap: 0; }
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.course-row:last-child { border-bottom: none; }
+
+.course-code-chip {
+  padding: 0.2rem 0.55rem;
+  background: rgba(99,102,241,0.1);
+  color: var(--primary);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.course-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.course-row-name { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+.course-row-meta { font-size: 0.75rem; color: var(--text-secondary); }
