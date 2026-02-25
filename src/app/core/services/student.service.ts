@@ -2,7 +2,6 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { Observable, of, throwError, delay } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Student, StudentFormData } from '../models/student.model';
-import { PaginatedResponse } from '../models/api.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
