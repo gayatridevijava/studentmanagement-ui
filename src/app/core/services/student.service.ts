@@ -26,9 +26,15 @@ export class StudentService {
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/student`;
   // Public readonly signals
-   students = this.getStudents();
+  private studentsSignal = signal<Student[]>([]);
+   students =this.studentsSignal.asReadonly();
 
-
+constructor() {
+  this.http.get<Student[]>(this.apiUrl).subscribe((students: Student[]) =>{
+      this.studentsSignal.set(students);
+    }
+  );
+}
   getStudents(): Observable<Student[]> {
      return this.http.get<Student[]>(this.apiUrl);
   }

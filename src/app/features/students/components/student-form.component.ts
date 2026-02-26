@@ -22,6 +22,8 @@ export class StudentFormComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroy$ = new Subject<void>();
+  private readonly phoneNumberPattern = /^[0-9]{10}$/;
+
 
   form!: FormGroup;
   isEdit = signal(false);
@@ -48,11 +50,13 @@ export class StudentFormComponent implements OnInit, OnDestroy {
   }
 
   private buildForm(): void {
+
+
     this.form = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', Validators.required],
+      phoneNumber: ['', [Validators.required,Validators.pattern(this.phoneNumberPattern)]],
       address: ['', Validators.required],
       enrolledCourses: [[]]
     });
@@ -134,8 +138,8 @@ export class StudentFormComponent implements OnInit, OnDestroy {
       next: (student) => {
         this.toastService.success(
           this.isEdit()
-            ? `${student.firstName} ${student.lastName} updated`
-            : `${student.firstName} ${student.lastName} created`
+            ? `${formData.firstName} ${formData.lastName} updated`
+            : `${formData.firstName} ${formData.lastName} created`
         );
         this.router.navigate(['/students']);
       },
@@ -160,6 +164,7 @@ export class StudentFormComponent implements OnInit, OnDestroy {
     if (!ctrl?.errors) return '';
     if (ctrl.errors['required']) return 'This field is required';
     if (ctrl.errors['email']) return 'Enter a valid email address';
+    if (ctrl.errors['phoneNumber']) return 'Enter a valid Phone Number';
     if (ctrl.errors['minlength']) return `Minimum ${ctrl.errors['minlength'].requiredLength} characters`;
     return 'Invalid value';
   }

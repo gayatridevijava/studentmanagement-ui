@@ -23,12 +23,10 @@ export class CourseService {
   readonly activeCourses = computed(() =>
     this.coursesSignal().filter((c: Course) => c.status === 'active').length
   );
-  isLoading = signal<boolean>(true);
 
 constructor() {
   this.http.get<Course[]>(this.apiUrl).subscribe((courses: Course[]) =>{
       this.coursesSignal.set(courses);
-       this.isLoading.set(false);
     }
   );
 }
@@ -77,10 +75,10 @@ constructor() {
 
   decrementEnrolledCount(courseId: string): void {
     this.coursesSignal.update((courses: Course[]) => courses.map((c: Course) =>
-                              c.id === courseId         // condition
-                                ? { ...c, enrolledCount: Math.max(0, c.enrolledCount - 1) }
-                                : c
-                                ));
+      c.id === courseId         // condition
+        ? { ...c, enrolledCount: Math.max(0, c.enrolledCount - 1) }
+        : c
+        ));
 
 
 }
